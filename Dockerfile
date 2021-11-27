@@ -22,7 +22,7 @@ EXPOSE 8080
 # Clone repo and prepare working directory
 #
 RUN git clone -b master https://github.com/VinieFortes/dccProject /home/dccProject
-WORKDIR /home/DccBot
+WORKDIR /home/dccProject
 
 RUN npm install
 RUN npm install --only=dev --ignore-scripts
