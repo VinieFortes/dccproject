@@ -16,3 +16,7 @@ Antes de instalar no Linux instale a dependencia ffmpeg
 > *Para rodar no Cloud Shell execute*
 
 > sudo apt-get install -y libgbm-dev
+
+Para configurar no HEROKU
+
+> heroku stack:set -a NOME_DO_APP
