@@ -43,6 +43,7 @@ const options = (start) => {
         authTimeout: 0,
         restartOnCrash: start,
         cacheEnabled: false,
+        multiDevice: true,
         hostNotificationLang: 'PT_BR',
         useChrome: true,
         killProcessOnBrowserClose: true,
