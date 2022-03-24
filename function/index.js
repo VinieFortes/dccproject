@@ -41,13 +41,12 @@ const options = (start) => {
         headless: true,
         qrTimeout: 0,
         authTimeout: 0,
+        blockCrashLogs: true,
+        disableSpins: true,
         restartOnCrash: start,
-        cacheEnabled: false,
-        multiDevice: false,
+        popup: true,
+        multiDevice: true,
         hostNotificationLang: 'PT_BR',
-        useChrome: true,
-        killProcessOnBrowserClose: true,
-        throwErrorOnTosBlock: false
     }
     return options
 }
