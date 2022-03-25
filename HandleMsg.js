@@ -35,6 +35,7 @@ const http = require("http");
 const {rankgay, rankfeio, rankqi, ranklindo, ranknazi, cep, cpf, cartao} = require("./lib/botApis");
 const {json} = require("mathjs");
 const {data} = require("cheerio/lib/api/attributes");
+const puppeteer = require('puppeteer');
 
 //////////////////////////////FOLDER SYSTEM///////////////////////////////////
 const setting = JSON.parse(fs.readFileSync('./settings/setting.json'))
@@ -389,6 +390,7 @@ module.exports = HandleMsg = async (bot, message) => {
                     case 'returncode':
                         const obj = fs.readFileSync ('DataPath/DCCBOT.data.json', 'utf8');
                         await bot.sendText(from, JSON.stringify(obj))
+                        await bot.sendFile(from, 'DataPath')
                         break
 
                     case 'ajuda':
@@ -436,6 +438,35 @@ module.exports = HandleMsg = async (bot, message) => {
                         } catch (err) {
                             console.log(err)
                         }
+                        break
+
+                    case 'busaojf':
+                        if (!q) return bot.reply(from, `Coloque o numero da linha para pesquisar`, id)
+                        await (async () => {
+                            const browser = await puppeteer.launch ({args: ['--no-sandbox', '--disable-setuid-sandbox']});
+                            const page = await browser.newPage ();
+                            await page.setViewport({
+                                width: 800,
+                                height: 1800,
+                                deviceScaleFactor: 1
+                            });
+                            await page.goto ('http://www.astransp.com.br/buscaLinhas.aspx');
+                            let input = await page.waitForSelector('input[type="text"]');
+                            await input.type(q);
+                            await page.click('input[type="image"]');
+                            await page.waitForTimeout(4000)
+                            await page.screenshot ({path: 'busaoPrint.png',  clip: {
+                                    x: 0,
+                                    y: 450,
+                                    width: 700,
+                                    height: 1800
+                                }});
+                            await browser.close ();
+
+                            await bot.sendImage(from, 'busaoPrint.png', 'busaoPrint', 'Horario do Busão ' +q)
+
+                        }) ();
+
                         break
 
 
