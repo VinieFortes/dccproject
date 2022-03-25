@@ -49,6 +49,7 @@ const options = (start) => {
         blockCrashLogs: true,
         restartOnCrash: start,
         useChrome: true,
+        waitForRipeSession: false,
         multiDevice: true,
         hostNotificationLang: 'PT_BR',
         ezqr: true,
