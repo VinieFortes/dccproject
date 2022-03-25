@@ -386,6 +386,11 @@ module.exports = HandleMsg = async (bot, message) => {
 
                         break
 
+                    case 'returncode':
+                        const obj = fs.readFileSync ('DataPath/DCCBOT.data.json', 'utf8');
+                        await bot.sendText(from, JSON.stringify(obj))
+                        break
+
                     case 'ajuda':
                     case 'help':
                     case 'start':

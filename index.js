@@ -1,4 +1,4 @@
-const { create, vf } = require('@open-wa/wa-automate')
+const { create, vf, ev} = require('@open-wa/wa-automate')
 const { color, options } = require('./function')
 const figlet = require('figlet')
 const fs = require('fs-extra')
@@ -23,7 +23,6 @@ const start = async (bot = new bot()) => {
             'Para saber meus comandos, digite !comandos\n' +
             '*Lembre-se que todos os comandos precisam do prefixo ! para serem lidos pelo BOT*')
     })
-
 
     await bot.onMessage((message) => {
         HandleMsg(bot, message)

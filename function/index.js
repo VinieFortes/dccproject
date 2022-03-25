@@ -1,5 +1,6 @@
 const chalk = require('chalk')
 const moment = require('moment-timezone')
+const {ev} = require ("@open-wa/wa-automate");
 moment.tz.setDefault('America/Sao_Paulo').locale('id')
 
 /**
@@ -37,16 +38,20 @@ const processTime = (timestamp, now) => {
  */
 const options = (start) => {
     const options = {
+        sessionData: ev.on('sessionData.**', async (sessionData, sessionId) =>{
+            console.log("Aaaaaaaaaaaaaaaaaaaaaaaaaaaa", sessionId, sessionData)
+        }),
         sessionId: 'DCCBOT',
+        sessionDataPath: 'DataPath',
         headless: true,
         qrTimeout: 0,
         authTimeout: 0,
         blockCrashLogs: true,
-        disableSpins: true,
         restartOnCrash: start,
-        popup: true,
+        useChrome: true,
         multiDevice: true,
         hostNotificationLang: 'PT_BR',
+        ezqr: true,
     }
     return options
 }
