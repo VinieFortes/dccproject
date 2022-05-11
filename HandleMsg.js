@@ -375,7 +375,7 @@ module.exports = HandleMsg = async (bot, message) => {
         }
 
 ///////////////////////////////////////////////////COMANDOS////////////////////////////////////////////////////
-            if(manutencao(false)) {
+            if(manutencao(false))  {
             }else if(verifyBlackList(author) === true && command){
             }else{
                 switch (command) {
