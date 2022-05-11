@@ -550,20 +550,6 @@ module.exports = HandleMsg = async (bot, message) => {
 
                     case 'phub':
 
-                        // if (!q || !isGroupMsg) return await bot.reply(from, `Somente em grupos & escreva uma msg`, id)
-                        // const userPic = await bot.getProfilePicFromServer(author)
-                        // if (userPic === undefined) {
-                        //     await bot.reply(from, "Calma ai parceiro que to rodando numa calculadora", id)
-                        //     console.log('Creating coffe  Maker')
-                        //     await bot.sendFileFromUrl(from, `https://api.zeks.xyz/api/phub?apikey=apivinz&img=https://1.bp.blogspot.com/-x8KhcOBG-yw/XiU4pi1yWVI/AAAAAAAADBA/gK8tsLyc1lQ808A348IKzDCjf6fUBKONwCLcBGAsYHQ/s1600/cara%2Bbuat%2Bfoto%2Bprofil%2Bdi%2Bwhatsapp%2Bmenjadi%2Bunik.jpg&username=${pushname}&msg=${q}`, 'bot.jpg', 'Pronto', id)
-                        // }
-                        // const dataPpPh = await bent('buffer')(userPic)
-                        // const fotog = await uploadImages(dataPpPh, `fotog.${sender.id}`)
-                        // await bot.reply(from, "Calma ai parceiro que to rodando numa calculadora", id)
-                        // console.log('Creating coffe  Maker')
-                        // await bot.sendFileFromUrl(from, `https://api.zeks.xyz/api/phub?apikey=apivinz&img=${fotog}&username=${pushname}&msg=${q}`, 'bot.jpg', 'Pronto', id)
-                        // break
-
                         if (args.length === 0) return bot.reply(from, `Escreva ai o que você quer o que o veio diga`, id)
                         await bot.reply(from, "Calma ai parceiro que to rodando numa calculadora", id)
                         await getPhub();
@@ -681,7 +667,7 @@ module.exports = HandleMsg = async (bot, message) => {
                             const datapotogay = await decryptMedia(encryptMediaa, uaOverride)
                             const fotolix = await uploadImages(datapotogay, `fotogay.${sender.id}`)
                             getImageBTV();
-                            async function getImage() {
+                            async function getImageBTV() {
                                 const canvas = Canvas.createCanvas(1068, 528);
                                 const ctx = canvas.getContext(`2d`);
                                 let image1 = await Canvas.loadImage(fotolix);
@@ -697,7 +683,7 @@ module.exports = HandleMsg = async (bot, message) => {
                             const dataPpPh = await bent('buffer')(userPica)
                             const fotolix = await uploadImages(dataPpPh, `fotowallpic.${sender.id}`)
                             getImageBTV();
-                            async function getImage() {
+                            async function getImageBTV() {
                                 const canvas = Canvas.createCanvas(1068, 528);
                                 const ctx = canvas.getContext(`2d`);
                                 let image1 = await Canvas.loadImage(fotolix);
@@ -776,9 +762,12 @@ module.exports = HandleMsg = async (bot, message) => {
                         break
 
                     case 'insta':
+                        if (args.length === 0) return bot.reply(from, `Use o comando ${prefix}insta com o [username]`, id)
                         await instagram.authenticate('anttoniii2022', 'botdcc123');
                         instagram.getUserData(q).then(userData => {
                             bot.sendFileFromUrl(from, userData.getHdProfilePicture(), 'insta.png', `*Nome do Perfil:* ${userData.getFullName()}\n*Bio:* ${userData.getBiography()}\n*Seguidores:* ${userData.getFollowersCount()}\n*Seguindo:* ${userData.getFollowingCount()}\n*Quantidades de Publicações:* ${userData.getPublicationsCount()}\n*Perfil Privado:* ${userData.isPrivate() === true ? "Sim" : "Não"}\n*Perfil Verificado:* ${userData.isVerified() === true ? "Sim" : "Não"}`, id);
+                        }).catch(err =>{
+                            console.log(err)
                         })
                         break
 
