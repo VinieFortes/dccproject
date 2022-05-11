@@ -782,6 +782,7 @@ module.exports = HandleMsg = async (bot, message) => {
                         break
 
                     case 'cartão':
+                    case 'cartao':
                         await bot.sendText(from, cartao())
                         break
 
