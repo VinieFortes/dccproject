@@ -29,7 +29,7 @@ const start = async (bot = new bot()) => {
     })
 
     await bot.onIncomingCall(async (callData) => {
-        await bot.sendText(callData.peerJid, 'Desculpe, não foi posso receber chamadas.\n\n-DCC bot')
+        await bot.sendText(callData.peerJid, 'Desculpe, não posso receber chamadas.\n\n-DCC bot')
     })
 
 }

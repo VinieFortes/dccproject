@@ -10,6 +10,7 @@ const appRoot = require('app-root-path')
 const { Readable, Writable } = require('stream')
 const fs = require('fs-extra')
 const Canvas = require(`canvas`);
+const instagram = require('user-instagram');
 const fetch = require('node-fetch');
 const {
     exec
@@ -32,7 +33,7 @@ const deepai = require("deepai");
 const {ind} = require("./message/text/lang/");
 const {default: Scraper} = require("@yimura/scraper");
 const http = require("http");
-const {rankgay, rankfeio, rankqi, ranklindo, ranknazi, cep, cpf, cartao} = require("./lib/botApis");
+const {rankgay, rankfeio, rankqi, ranklindo, ranknazi, cep, cpf, cartao, imgNeko} = require("./lib/botApis");
 const {json} = require("mathjs");
 const {data} = require("cheerio/lib/api/attributes");
 const puppeteer = require('puppeteer');
@@ -66,6 +67,7 @@ function verifyWhiteList(author){
 
 //////////////////////////////////////////////////////////////////////////////
 module.exports = HandleMsg = async (bot, message) => {
+    let ext;
     try {
         const {
             type,
@@ -165,83 +167,81 @@ module.exports = HandleMsg = async (bot, message) => {
             await bot.sendAudio(from, './media/audio/paty.mp3', id)
         }
 //////////////////////////////////////FUTEBOL///////////////////////////////////////
-//         function serieA(){
-//             const url = 'https://www.cnnbrasil.com.br/esporte/futebol/brasileirao-serie-a-2021/';
-//             let tabelaJson = '';
-//             axios(url).then(async response => {
-//                 const html = response.data;
-//                 const $ = cheerio.load(html);
-//                 const tabelaSerieA = $('.body__row');
-//                 let posicao = 0
-//                 let nome;
-//                 let pontos;
-//                 tabelaSerieA.each(function () {
-//                     posicao++
-//                     nome = $(this).find('.hide__s').text();
-//                     pontos = $(this).find('.teams__points.table__body__cell--gray').text();
-//                     tabelaJson += posicao + '  ' + nome + '  ' + pontos + '\n'
-//                 });
-//                 await bot.sendText(from, '══✪〘 BRASILEIRÃO SERIE A 〙✪══' + '\n' + tabelaJson)
-//             }).catch(console.error);
-//         }
-//         function serieB() {
-//             const url = 'https://www.otempo.com.br/superfc/serie-b';
-//             axios(url).then(async response => {
-//                 const html = response.data;
-//                 const $ = cheerio.load(html);
-//                 let tabelaJson = '';
-//                 const tabelaSerieA = $('.cell.linha-time.ng-scope.selected');
-//                 let posicao = 0
-//                 tabelaSerieA.each(function () {
-//                     posicao++
-//                     const nome = $(this).find('.nome.ng-binding').text();
-//                     const pontos = $(this).find('.someClass.ng-binding').first().text()
-//                     tabelaJson += posicao + '  ' + nome + '  ' + pontos + '\n'
-//                 });
-//                 await bot.sendText(from, '══✪〘 BRASILEIRÃO SERIE B 〙✪══' + '\n' + tabelaJson)
-//             }).catch(console.error);
-//         }
-//
-//         function jogosSerieA(){
-//             const url = 'https://www.placardefutebol.com.br/brasileirao-serie-a';
-//             axios(url).then(async response => {
-//                 const html = response.data;
-//                 const $ = cheerio.load(html);
-//                 const colunas = $('.row.align-items-center.content');
-//                 let jogos = '';
-//                 colunas.each(function () {
-//                     let status = $(this).find('.badge.badge-danger.status-name').text();
-//                     if (status.length === 0) status = $(this).find('.badge.badge-info.status-name').text();
-//                     if (status.length === 0) status = $(this).find('.badge.badge-success.status-name').text();
-//                     let timeHome = $(this).find('.text-right.team_link').text();
-//                     let placarHome = $(this).find('.badge.badge-default').eq(0).text();
-//                     let placarVisitante = $(this).find('.badge.badge-default').eq(1).text();
-//                     let timeVisitante = $(this).find('.text-left.team_link').text();
-//                     jogos += status + '  ' + timeHome + '  ' + placarHome + ' X ' + placarVisitante + ' ' + timeVisitante + '\n';
-//                 });
-//                 await bot.sendText(from, '══✪〘 BRASILEIRÃO SERIE A 〙✪══' + '\n' + jogos)
-//             }).catch(console.error);
-//         }
-//         function jogosSerieB(){
-//             const url = 'https://www.placardefutebol.com.br/brasileirao-serie-b';
-//             axios(url).then(async response => {
-//                 const html = response.data;
-//                 const $ = cheerio.load(html);
-//                 const colunas = $('.row.align-items-center.content');
-//                 let jogos = '';
-//                 colunas.each(function () {
-//                     let status = $(this).find('.badge.badge-danger.status-name').text();
-//                     if (status.length === 0) status = $(this).find('.badge.badge-info.status-name').text();
-//                     if (status.length === 0) status = $(this).find('.badge.badge-success.status-name').text();
-//                     let timeHome = $(this).find('.text-right.team_link').text();
-//                     let placarHome = $(this).find('.badge.badge-default').eq(0).text();
-//                     let placarVisitante = $(this).find('.badge.badge-default').eq(1).text();
-//                     let timeVisitante = $(this).find('.text-left.team_link').text();
-//                     jogos += status + '  ' + timeHome + '  ' + placarHome + ' X ' + placarVisitante + ' ' + timeVisitante + '\n';
-//                 });
-//                 await bot.sendText(from, '══✪〘 BRASILEIRÃO SERIE B 〙✪══' + '\n' + jogos)
-//             }).catch(console.error);
-//         }
+        function serieA(){
+            const url = 'https://www.otempo.com.br/superfc/serie-a';
+            axios(url).then(async response => {
+                const html = response.data;
+                const $ = cheerio.load(html);
+                let tabelaJson = '';
+                const tabelaSerieA = $('.cell.linha-time.ng-scope.selected');
+                let posicao = 0
+                tabelaSerieA.each(function () {
+                    posicao++
+                    const nome = $(this).find('.nome.ng-binding').text();
+                    const pontos = $(this).find('.someClass.ng-binding').first().text()
+                    tabelaJson += posicao + '  ' + nome + '  ' + pontos + '\n'
+                });
+                await bot.sendText(from, '══✪〘 BRASILEIRÃO SERIE A 〙✪══' + '\n' + tabelaJson)
+            }).catch(console.error);
+        }
+        function serieB() {
+            const url = 'https://www.otempo.com.br/superfc/serie-b';
+            axios(url).then(async response => {
+                const html = response.data;
+                const $ = cheerio.load(html);
+                let tabelaJson = '';
+                const tabelaSerieA = $('.cell.linha-time.ng-scope.selected');
+                let posicao = 0
+                tabelaSerieA.each(function () {
+                    posicao++
+                    const nome = $(this).find('.nome.ng-binding').text();
+                    const pontos = $(this).find('.someClass.ng-binding').first().text()
+                    tabelaJson += posicao + '  ' + nome + '  ' + pontos + '\n'
+                });
+                await bot.sendText(from, '══✪〘 BRASILEIRÃO SERIE B 〙✪══' + '\n' + tabelaJson)
+            }).catch(console.error);
+        }
+
+        function jogosSerieA(){
+            const url = 'https://www.placardefutebol.com.br/brasileirao-serie-a';
+            axios(url).then(async response => {
+                const html = response.data;
+                const $ = cheerio.load(html);
+                const colunas = $('.row.align-items-center.content');
+                let jogos = '';
+                colunas.each(function () {
+                    let status = $(this).find('.badge.badge-danger.status-name').text();
+                    if (status.length === 0) status = $(this).find('.badge.badge-info.status-name').text();
+                    if (status.length === 0) status = $(this).find('.badge.badge-success.status-name').text();
+                    let timeHome = $(this).find('.text-right.team_link').text();
+                    let placarHome = $(this).find('.badge.badge-default').eq(0).text();
+                    let placarVisitante = $(this).find('.badge.badge-default').eq(1).text();
+                    let timeVisitante = $(this).find('.text-left.team_link').text();
+                    jogos += status + '  ' + timeHome + '  ' + placarHome + ' X ' + placarVisitante + ' ' + timeVisitante + '\n';
+                });
+                await bot.sendText(from, '══✪〘 BRASILEIRÃO SERIE A 〙✪══' + '\n' + jogos)
+            }).catch(console.error);
+        }
+        function jogosSerieB(){
+            const url = 'https://www.placardefutebol.com.br/brasileirao-serie-b';
+            axios(url).then(async response => {
+                const html = response.data;
+                const $ = cheerio.load(html);
+                const colunas = $('.row.align-items-center.content');
+                let jogos = '';
+                colunas.each(function () {
+                    let status = $(this).find('.badge.badge-danger.status-name').text();
+                    if (status.length === 0) status = $(this).find('.badge.badge-info.status-name').text();
+                    if (status.length === 0) status = $(this).find('.badge.badge-success.status-name').text();
+                    let timeHome = $(this).find('.text-right.team_link').text();
+                    let placarHome = $(this).find('.badge.badge-default').eq(0).text();
+                    let placarVisitante = $(this).find('.badge.badge-default').eq(1).text();
+                    let timeVisitante = $(this).find('.text-left.team_link').text();
+                    jogos += status + '  ' + timeHome + '  ' + placarHome + ' X ' + placarVisitante + ' ' + timeVisitante + '\n';
+                });
+                await bot.sendText(from, '══✪〘 BRASILEIRÃO SERIE B 〙✪══' + '\n' + jogos)
+            }).catch(console.error);
+        }
 ///////////////////////////////////////////////////////////BASS////////////////////////////////////
         function stream2Buffer(cb = noop) {
             return new Promise(resolve => {
@@ -387,11 +387,11 @@ module.exports = HandleMsg = async (bot, message) => {
 
                         break
 
-                    case 'returncode':
-                        const obj = fs.readFileSync ('DataPath/DCCBOT.data.json', 'utf8');
-                        await bot.sendText(from, JSON.stringify(obj))
-                        await bot.sendFile(from, 'DataPath')
-                        break
+                    // case 'returncode':
+                    //     const obj = fs.readFileSync ('DataPath/DCCBOT.data.json', 'utf8');
+                    //     await bot.sendText(from, JSON.stringify(obj))
+                    //     await bot.sendFile(from, 'DataPath')
+                    //     break
 
                     case 'ajuda':
                     case 'help':
@@ -411,7 +411,7 @@ module.exports = HandleMsg = async (bot, message) => {
                             const fotomeme = await uploadImages(datameme, `fotomeme.${sender.id}`)
                             await bot.sendFileFromUrl(from, `https://api.memegen.link/images/custom/${cima}/${bottom}.png?background=${fotomeme}`, 'image/png', '', `Ta na mão patrão !`, id)
                         } else {
-                            await bot.reply(from, `Então para criar um meme você envia ou respode uma foto com o comando junto de um texto que vai ficar na parte superior e um texto na parte inferior separado por /\nExemplo: !meme texto cima / texto baixo`, id)
+                            await bot.reply(from, `Então para criar um meme você envia ou responde uma foto com o comando junto de um texto que vai ficar na parte superior e um texto na parte inferior separado por /\nExemplo: !meme texto cima / texto baixo`, id)
                         }
                         break
 
@@ -424,19 +424,6 @@ module.exports = HandleMsg = async (bot, message) => {
                         } catch (err) {
                             console.log(err)
                             await bot.reply(from, 'Hmm deu merda', id)
-                        }
-                        break
-
-                    case 'putaria':
-                        if (!q) return await bot.reply(from, `Esse comando é +18 para acessa-lo digite a senha junto com o comando !`, id)
-                        await passVerify(q)
-                        const pussyurl = await axios.get('https://meme-api.herokuapp.com/gimme/' + 'pussy')
-                        const pussydata = pussyurl.data
-                        try {
-                            await bot.sendImage(from, pussydata.url, '', '', id)
-
-                        } catch (err) {
-                            console.log(err)
                         }
                         break
 
@@ -485,7 +472,6 @@ module.exports = HandleMsg = async (bot, message) => {
                     case 'toimg':
                         if (quotedMsg && quotedMsg.type === 'sticker') {
                             const mediaData = await decryptMedia(quotedMsg)
-                            await bot.reply(from, `Aquenta ai meu chapa`, id)
                             const imageBase64 = `data:${quotedMsg.mimetype};base64,${mediaData.toString('base64')}`
                             await bot.sendFile(from, imageBase64, 'imgsticker.jpg', 'Ta na mão patrão', id)
                                 .then(() => {
@@ -563,38 +549,64 @@ module.exports = HandleMsg = async (bot, message) => {
 
 
                     case 'phub':
-                        if (!q || !isGroupMsg) return await bot.reply(from, `Somente em grupos & escreva uma msg`, id)
-                        const userPic = await bot.getProfilePicFromServer(author)
+
+                        // if (!q || !isGroupMsg) return await bot.reply(from, `Somente em grupos & escreva uma msg`, id)
+                        // const userPic = await bot.getProfilePicFromServer(author)
+                        // if (userPic === undefined) {
+                        //     await bot.reply(from, "Calma ai parceiro que to rodando numa calculadora", id)
+                        //     console.log('Creating coffe  Maker')
+                        //     await bot.sendFileFromUrl(from, `https://api.zeks.xyz/api/phub?apikey=apivinz&img=https://1.bp.blogspot.com/-x8KhcOBG-yw/XiU4pi1yWVI/AAAAAAAADBA/gK8tsLyc1lQ808A348IKzDCjf6fUBKONwCLcBGAsYHQ/s1600/cara%2Bbuat%2Bfoto%2Bprofil%2Bdi%2Bwhatsapp%2Bmenjadi%2Bunik.jpg&username=${pushname}&msg=${q}`, 'bot.jpg', 'Pronto', id)
+                        // }
+                        // const dataPpPh = await bent('buffer')(userPic)
+                        // const fotog = await uploadImages(dataPpPh, `fotog.${sender.id}`)
+                        // await bot.reply(from, "Calma ai parceiro que to rodando numa calculadora", id)
+                        // console.log('Creating coffe  Maker')
+                        // await bot.sendFileFromUrl(from, `https://api.zeks.xyz/api/phub?apikey=apivinz&img=${fotog}&username=${pushname}&msg=${q}`, 'bot.jpg', 'Pronto', id)
+                        // break
+
+                        if (args.length === 0) return bot.reply(from, `Escreva ai o que você quer o que o veio diga`, id)
+                        await bot.reply(from, "Calma ai parceiro que to rodando numa calculadora", id)
+                        await getPhub();
+                    async function getPhub() {
+                        const userPic = await bot.getProfilePicFromServer(author);
+                        const canvas = Canvas.createCanvas(1125, 802);
+                        const msg = canvas.getContext(`2d`);
+                        const background = await Canvas.loadImage(`./media/images/phub.png`);
+                        const noUser = await Canvas.loadImage(`./media/images/noUser.jpg`);
+                        const user = await Canvas.loadImage(userPic);
+                        msg.drawImage(background, 0, 0, 1125, 802);
+
                         if (userPic === undefined) {
-                            await bot.reply(from, "Calma ai parceiro que to rodando numa calculadora", id)
-                            console.log('Creating coffe  Maker')
-                            await bot.sendFileFromUrl(from, `https://api.zeks.xyz/api/phub?apikey=apivinz&img=https://1.bp.blogspot.com/-x8KhcOBG-yw/XiU4pi1yWVI/AAAAAAAADBA/gK8tsLyc1lQ808A348IKzDCjf6fUBKONwCLcBGAsYHQ/s1600/cara%2Bbuat%2Bfoto%2Bprofil%2Bdi%2Bwhatsapp%2Bmenjadi%2Bunik.jpg&username=${pushname}&msg=${q}`, 'bot.jpg', 'Pronto', id)
+                            msg.drawImage(noUser, 0, 0, 500, 500);
                         }
-                        const dataPpPh = await bent('buffer')(userPic)
-                        const fotog = await uploadImages(dataPpPh, `fotog.${sender.id}`)
-                        await bot.reply(from, "Calma ai parceiro que to rodando numa calculadora", id)
-                        console.log('Creating coffe  Maker')
-                        await bot.sendFileFromUrl(from, `https://api.zeks.xyz/api/phub?apikey=apivinz&img=${fotog}&username=${pushname}&msg=${q}`, 'bot.jpg', 'Pronto', id)
+                        msg.drawImage(user, 25, 380, 110, 110);
+
+                        msg.font = '60px "Arial black"'
+                        msg.fillStyle = "orange";
+                        msg.fillText(`${pushname}`, 160, 460, 700)
+
+                        msg.font = '50px "Arial black"'
+                        msg.fillStyle = "white";
+                        msg.fillText(q, 50, 550, 700)
+
+                        const buffer = canvas.toDataURL()
+                        await bot.sendImage(from, buffer, 'final.png','' ,id)
+                    }
                         break
 
-
-                    case 'blackpink':
-                        await bot.reply(from, "Calma ai parceiro que to rodando numa calculadora", id)
-                        await bot.sendFileFromUrl(from, `https://api.zeks.xyz/api/logobp?text=${q}&apikey=apivinz`, 'blackpink.jpg', '', id)
-                        break
 
                     case 'trumptweet':
-                        if (args.length === 0) return bot.reply(from, `Escreva ai o que você quer o que o trum diga`, id)
-                        bot.reply(from, "Calma ai parceiro que to rodando numa calculadora", id)
+                        if (args.length === 0) return bot.reply(from, `Escreva ai o que você quer o que o Trump diga`, id)
+                        await bot.reply (from, "Calma ai parceiro que to rodando numa calculadora", id)
                         const tump = body.slice(12)
                         const trumj = await axios.get(`https://nekobot.xyz/api/imagegen?type=trumptweet&text=${tump}`)
                         const tumh = trumj.data
                         if (tumh.message.endsWith('.png')) {
-                            var ext = '.png'
+                            ext = '.png';
                         } else {
-                            var ext = '.jpg'
+                            ext = '.jpg';
                         }
-                        await bot.sendFileFromUrl(from, tumh.message, `Nekonime${ext}`, '#MakeAmericaGayAgain', id)
+                        await bot.sendFileFromUrl(from, tumh.message, `Nekonime${ext}`, '', id)
                         break
 
                     case 'veio':
@@ -614,7 +626,7 @@ module.exports = HandleMsg = async (bot, message) => {
                         break
 
                     case 'bolsotweet':
-                        if (args.length === 0) return bot.reply(from, `Escreva ai o que você quer o que o veio diga`, id)
+                        if (args.length === 0) return bot.reply(from, `Escreva ai o que você quer o que o Mito diga`, id)
                         await bot.reply(from, "Calma ai parceiro que to rodando numa calculadora", id)
                         await getBolso();
                     async function getBolso() {
@@ -631,67 +643,19 @@ module.exports = HandleMsg = async (bot, message) => {
 
 
                     case 'lixo':
-                        if (mentionedJidList.length !== 0) {
-                            const userPic = await bot.getProfilePicFromServer(mentionedJidList[0])
-                            const dataPpPh = await bent('buffer')(userPic)
-                            const fotolix = await uploadImages(dataPpPh, `fotogta.${sender.id}`)
-                            await bot.reply(from, "Calma ai parceiro que to rodando numa calculadora", id)
-                            const lixo = await axios.get(`https://nekobot.xyz/api/imagegen?type=trash&url=${fotolix}`)
-                            const tumh = lixo.data
-                            if (tumh.message.endsWith('.png')) {
-                                var ext = '.png'
-                            } else {
-                                var ext = '.jpg'
-                            }
-                            await bot.sendFileFromUrl(from, tumh.message, `Nekonime${ext}`, '', id)
-                        } else if (isMedia && type === 'image' || isQuotedImage) {
-                            const encryptMediaa = isQuotedImage ? quotedMsg : message
-                            const datapotogay = await decryptMedia(encryptMediaa, uaOverride)
-                            const fotolix = await uploadImages(datapotogay, `fotogay.${sender.id}`)
-                            await bot.reply(from, "Calma ai parceiro que to rodando numa calculadora", id)
-                            const lixo = await axios.get(`https://nekobot.xyz/api/imagegen?type=trash&url=${fotolix}`)
-                            const tumh = lixo.data
-                            if (tumh.message.endsWith('.png')) {
-                                var ext = '.png'
-                            } else {
-                                var ext = '.jpg'
-                            }
-                            await bot.sendFileFromUrl(from, tumh.message, `Nekonime${ext}`, '', id)
-                        } else {
-                            const userPica = await bot.getProfilePicFromServer(author)
-                            const dataPpPh = await bent('buffer')(userPica)
-                            const fotolix = await uploadImages(dataPpPh, `fotowallpic.${sender.id}`)
-                            await bot.reply(from, "Calma ai parceiro que to rodando numa calculadora", id)
-                            const lixo2 = await axios.get(`https://nekobot.xyz/api/imagegen?type=trash&url=${fotolix}`)
-                            const tumh = lixo2.data
-                            if (tumh.message.endsWith('.png')) {
-                                var ext = '.png'
-                            } else {
-                                var ext = '.jpg'
-                            }
-                            await bot.sendFileFromUrl(from, tumh.message, `Nekonime${ext}`, '', id)
-                        }
+                        await bot.sendFileFromUrl(from, await imgNeko(mentionedJidList, bot, mentionedJidList[0], sender, id, 'trash', from, isMedia, type, isQuotedImage, quotedMsg, message, uaOverride, author), `Nekonime${ext}`, '', id);
+                        break
+
+                    case 'baguette':
+                        await bot.sendFileFromUrl(from, await imgNeko(mentionedJidList, bot, mentionedJidList[0], sender, id, 'baguette', from, isMedia, type, isQuotedImage, quotedMsg, message, uaOverride, author), `Nekonime${ext}`, '', id);
+                        break
+
+                    case 'lolice':
+                            await bot.sendFileFromUrl(from, await imgNeko(mentionedJidList, bot, mentionedJidList[0], sender, id, 'lolice', from, isMedia, type, isQuotedImage, quotedMsg, message, uaOverride, author), `Nekonime${ext}`, '', id);
                         break
 
                     case 'bug':
-                        if (mentionedJidList.length !== 0) {
-                            const userPic = await bot.getProfilePicFromServer(mentionedJidList[0])
-                            const dataPpPh = await bent('buffer')(userPic)
-                            const fotolix = await uploadImages(dataPpPh, `fotogta.${sender.id}`)
-                            await bot.reply(from, "Calma ai parceiro que to rodando numa calculadora", id)
-                            const bug = await axios.get(`https://nekobot.xyz/api/imagegen?type=stickbug&url=${fotolix}`)
-                            const link = bug.data.message
-                            await bot.sendVideoAsGif(from, link, 'bot.mp4', 'Pronto', id)
-
-                        } else {
-                            const userPica = await bot.getProfilePicFromServer(author)
-                            const dataPpPh = await bent('buffer')(userPica)
-                            const fotolix = await uploadImages(dataPpPh, `fotowallpic.${sender.id}`)
-                            await bot.reply(from, "Calma ai parceiro que to rodando numa calculadora", id)
-                            const bug2 = await axios.get(`https://nekobot.xyz/api/imagegen?type=stickbug&url=${fotolix}`)
-                            const tumh = bug2.data.message
-                            await bot.sendFileFromUrl(from, tumh, `Nekonime${ext}`, '', id)
-                        }
+                        await bot.sendFileFromUrl(from, await imgNeko(mentionedJidList, bot, mentionedJidList[0], sender, id, 'stickbug', from, isMedia, type, isQuotedImage, quotedMsg, message, uaOverride, author), `Nekonime${ext}`, '', id);
                         break
 
                     case 'bolsotv':
@@ -700,8 +664,8 @@ module.exports = HandleMsg = async (bot, message) => {
                             const dataPpPh = await bent('buffer')(userPic)
                             const fotolix = await uploadImages(dataPpPh, `fotogta.${sender.id}`)
                             await bot.reply(from, "Calma ai parceiro que to rodando numa calculadora", id)
-                            getImage();
-                            async function getImage() {
+                            getImageBTV();
+                            async function getImageBTV() {
                                 const canvas = Canvas.createCanvas(1068, 528);
                                 const ctx = canvas.getContext(`2d`);
                                 let image1 = await Canvas.loadImage(fotolix);
@@ -716,7 +680,7 @@ module.exports = HandleMsg = async (bot, message) => {
                             const encryptMediaa = isQuotedImage ? quotedMsg : message
                             const datapotogay = await decryptMedia(encryptMediaa, uaOverride)
                             const fotolix = await uploadImages(datapotogay, `fotogay.${sender.id}`)
-                            getImage();
+                            getImageBTV();
                             async function getImage() {
                                 const canvas = Canvas.createCanvas(1068, 528);
                                 const ctx = canvas.getContext(`2d`);
@@ -732,7 +696,7 @@ module.exports = HandleMsg = async (bot, message) => {
                             const userPica = await bot.getProfilePicFromServer(author)
                             const dataPpPh = await bent('buffer')(userPica)
                             const fotolix = await uploadImages(dataPpPh, `fotowallpic.${sender.id}`)
-                            getImage();
+                            getImageBTV();
                             async function getImage() {
                                 const canvas = Canvas.createCanvas(1068, 528);
                                 const ctx = canvas.getContext(`2d`);
@@ -752,8 +716,8 @@ module.exports = HandleMsg = async (bot, message) => {
                             const dataPpPh = await bent('buffer')(userPic)
                             const fotolix = await uploadImages(dataPpPh, `fotogta.${sender.id}`)
                             await bot.reply(from, "Calma ai parceiro que to rodando numa calculadora", id)
-                            getImage();
-                            async function getImage() {
+                            getImageED();
+                            async function getImageED() {
                                 const canvas = Canvas.createCanvas(540, 547);
                                 const ctx = canvas.getContext(`2d`);
                                 let image1 = await Canvas.loadImage(fotolix);
@@ -768,8 +732,8 @@ module.exports = HandleMsg = async (bot, message) => {
                             const encryptMediaa = isQuotedImage ? quotedMsg : message
                             const datapotogay = await decryptMedia(encryptMediaa, uaOverride)
                             const fotolix = await uploadImages(datapotogay, `fotogay.${sender.id}`)
-                            getImage();
-                            async function getImage() {
+                            getImageED();
+                            async function getImageED() {
                                 const canvas = Canvas.createCanvas(540, 547);
                                 const ctx = canvas.getContext(`2d`);
                                 let image1 = await Canvas.loadImage(fotolix);
@@ -784,8 +748,8 @@ module.exports = HandleMsg = async (bot, message) => {
                             const userPica = await bot.getProfilePicFromServer(author)
                             const dataPpPh = await bent('buffer')(userPica)
                             const fotolix = await uploadImages(dataPpPh, `fotowallpic.${sender.id}`)
-                            getImage();
-                            async function getImage() {
+                            getImageED();
+                            async function getImageED() {
                                 const canvas = Canvas.createCanvas(540, 547);
                                 const ctx = canvas.getContext(`2d`);
                                 let image1 = await Canvas.loadImage(fotolix);
@@ -797,54 +761,6 @@ module.exports = HandleMsg = async (bot, message) => {
                             }
                         }
                         break
-
-                    case 'toon':
-                        if (mentionedJidList.length !== 0) {
-                            const userPic = await bot.getProfilePicFromServer(mentionedJidList[0])
-                            const dataPpPh = await bent('buffer')(userPic)
-                            const fotolix = await uploadImages(dataPpPh, `fotogta.${sender.id}`)
-                            await bot.reply(from, "Calma ai parceiro que to rodando numa calculadora", id)
-                            const deepai = require('deepai');
-                            deepai.setApiKey('quickstart-QUdJIGlzIGNvbWluZy4uLi4K');
-                            (async function () {
-                                const resp = await deepai.callStandardApi("toonify", {
-                                    image: fotolix,
-                                });
-                                console.log(resp)
-                                await bot.sendFileFromUrl(from, resp.output_url, 'img.png', '', id)
-                            })()
-
-                        } else if (isMedia && type === 'image' || isQuotedImage) {
-                            const encryptMediaa = isQuotedImage ? quotedMsg : message
-                            const datapotogay = await decryptMedia(encryptMediaa, uaOverride)
-                            const fotolix = await uploadImages(datapotogay, `fotogay.${sender.id}`)
-                            console.log(fotolix)
-                            const deepai = require('deepai');
-                            deepai.setApiKey('quickstart-QUdJIGlzIGNvbWluZy4uLi4K');
-                            (async function () {
-                                const resp = await deepai.callStandardApi("toonify", {
-                                    image: fotolix,
-                                });
-                                console.log(resp)
-                                await bot.sendFileFromUrl(from, resp.output_url, 'img.png', '', id)
-                            })()
-                        }
-                        else {
-                            const userPica = await bot.getProfilePicFromServer(author)
-                            const dataPpPh = await bent('buffer')(userPica)
-                            const fotolix = await uploadImages(dataPpPh, `fotowallpic.${sender.id}`)
-                            const deepai = require('deepai');
-                            deepai.setApiKey('quickstart-QUdJIGlzIGNvbWluZy4uLi4K');
-                            (async function () {
-                                const resp = await deepai.callStandardApi("toonify", {
-                                    image: fotolix,
-                                });
-                                console.log(resp)
-                                await bot.sendFileFromUrl(from, resp.output_url, 'img.png', '', id)
-                            })()
-                        }
-                        break
-
 
                     case 'github':
                         if (args.length === 0) return bot.reply(from, `Use o comando ${prefix}github com o [username]`, id)
@@ -860,9 +776,9 @@ module.exports = HandleMsg = async (bot, message) => {
                         break
 
                     case 'insta':
-                        const ig = require('insta-fetcher')
-                        ig.fetchUser(q).then(res => {
-                            bot.sendFileFromUrl(from, res.profile_pic_url_hd, 'insta.png', `- *Usuario :* ${res.username}\n- *Nome :* ${res.full_name}\n- *Seguidores :* ${res.following}\n- *Seguindo :* ${res.followers}\n- *Bio :* ${res.biography}\nhttps://www.instagram.com/${q}`)
+                        await instagram.authenticate('anttoniii2022', 'botdcc123');
+                        instagram.getUserData(q).then(userData => {
+                            bot.sendFileFromUrl(from, userData.getHdProfilePicture(), 'insta.png', `*Nome do Perfil:* ${userData.getFullName()}\n*Bio:* ${userData.getBiography()}\n*Seguidores:* ${userData.getFollowersCount()}\n*Seguindo:* ${userData.getFollowingCount()}\n*Quantidades de Publicações:* ${userData.getPublicationsCount()}\n*Perfil Privado:* ${userData.isPrivate() === true ? "Sim" : "Não"}\n*Perfil Verificado:* ${userData.isVerified() === true ? "Sim" : "Não"}`, id);
                         })
                         break
 
@@ -876,9 +792,9 @@ module.exports = HandleMsg = async (bot, message) => {
                         await bot.sendText(from, cpf())
                         break
 
-                    // case 'cartão':
-                    //     await bot.sendText(from, cartao())
-                    //     break
+                    case 'cartão':
+                        await bot.sendText(from, cartao())
+                        break
 
                     case "ppt":
                         if (args.length === 0) return bot.reply(from, `Use o ${prefix}ppt [E jogue pedra, papel ou tesoura]`, id)
@@ -905,13 +821,13 @@ module.exports = HandleMsg = async (bot, message) => {
 
                     case 'del':
                         if (author === '553298033583') {
-                            if (!quotedMsg) return bot.reply(from, `So responder com o comando del que eu apago`, id)
-                            if (!quotedMsgObj.fromMe) return bot.reply(from, `So posso apagar minhas proprias mensagens !`, id)
+                            if (!quotedMsg) return bot.reply(from, `Só responder com o comando del, que eu apago`, id)
+                            if (!quotedMsgObj.fromMe) return bot.reply(from, `Só posso apagar minhas proprias mensagens !`, id)
                             await bot.deleteMessage(quotedMsgObj.chatId, quotedMsgObj.id, false)
                         } else {
                             if (!isGroupAdmins) return bot.reply(from, 'Somente os adm podem me calar', id)
-                            if (!quotedMsg) return bot.reply(from, `So responder com o comando del que eu apago`, id)
-                            if (!quotedMsgObj.fromMe) return bot.reply(from, `So posso apagar minhas proprias mensagens !`, id)
+                            if (!quotedMsg) return bot.reply(from, `Só responder com o comando del, que eu apago`, id)
+                            if (!quotedMsgObj.fromMe) return bot.reply(from, `Só posso apagar minhas proprias mensagens !`, id)
                             await bot.deleteMessage(quotedMsgObj.chatId, quotedMsgObj.id, false)
                         }
                         break
@@ -1055,6 +971,7 @@ module.exports = HandleMsg = async (bot, message) => {
                             await bot.removeParticipant(groupId, mentionedJidList[i])
                         }
                         break
+
                     case 'promover':
                         if (!isGroupMsg) return bot.reply(from, 'Esse comando só pode ser executado em grupos!', id)
                         if (!isGroupAdmins) return bot.reply(from, 'Você precisa ser Adm para executar estes comando!', id)
@@ -1136,6 +1053,7 @@ module.exports = HandleMsg = async (bot, message) => {
                         break
 
                     case 'missao':
+                    case 'missão':
                         if (isMedia && type === 'image' || isQuotedImage) {
                             const encryptMediaa = isQuotedImage ? quotedMsg : message
                             const datapotogay = await decryptMedia(encryptMediaa, uaOverride)
@@ -1270,14 +1188,6 @@ module.exports = HandleMsg = async (bot, message) => {
                             await bot.sendText(from, 'Parabens Você foi infectado :)')
                         break
 
-                    case 'fontefunkeiro':
-                        if (args.length == 0) return bot.reply(from, `Escreva algo depois do comando\n\nExemplo: ${prefix}Nois é os pia`, id)
-                        rugaapi.bapakfont(body.slice(11))
-                            .then(async (res) => {
-                                await bot.reply(from, `${res}`, id)
-                            })
-                        break
-
                     case 'dolar':
                         await axios.get(`https://economia.awesomeapi.com.br/all/USD`).then(res => {
                             const texttr = res.data.USD.bid
@@ -1316,13 +1226,13 @@ module.exports = HandleMsg = async (bot, message) => {
                         break
 
                     case 'fechargrupo':
-                        if (userdev === '553298033583') {
+                        if (author === '553298033583@c.us') {
                             if (args[0] === 'on') {
                                 bot.setGroupToAdminsOnly(groupId, true).then(() => bot.sendText(from, 'Grupo está fechado somente os adms podem enviar msgs #DitaduraON !'))
                             } else if (args[0] === 'off') {
                                 bot.setGroupToAdminsOnly(groupId, false).then(() => bot.sendText(from, 'A baderna está liberada dnv para todos !'))
                             } else {
-                                bot.reply(from, `para fechar um grupo digite !fechargrupo on ou !fechargrupo off`, id)
+                                await bot.reply (from, `para fechar um grupo digite !fechargrupo on ou !fechargrupo off`, id)
                             }
                         } else {
                             if (!isGroupMsg) return bot.reply(from, 'Precisa está em um grupo para realizar esse comando', id)
@@ -1334,7 +1244,7 @@ module.exports = HandleMsg = async (bot, message) => {
                             } else if (args[0] === 'off') {
                                 bot.setGroupToAdminsOnly(groupId, false).then(() => bot.sendText(from, 'A baderna está liberada dnv para todos !'))
                             } else {
-                                bot.reply(from, `para fechar um grupo digite !fechargrupo on ou !fechargrupo off`, id)
+                                await bot.reply (from, `para fechar um grupo digite !fechargrupo on ou !fechargrupo off`, id)
                             }
                         }
                         break
@@ -1364,11 +1274,18 @@ module.exports = HandleMsg = async (bot, message) => {
                         }
                     }
                         await bot.sendPtt(from, './media/audio/bolsonaro.mp3', id)
-                        break
+                    break
 
-                    // case 'lula':
-                    //     await bot.sendFileFromUrl(from, 'https://pt.org.br/wp-content/uploads/2021/04/lula-rstuckert-585x390.jpg', 'lula', 'Pai Lulo tirou 146354 milhões de bots de wpp da pobreza', id)
-                    //     break
+                    case 'lula':
+                        gis('Lula', logResultsss);
+                    async function logResultsss(error, results) {
+                        if (error) {
+                            console.log (error);
+                        } else {
+                            await bot.sendFileFromUrl (from, results[Math.floor (Math.random () * 50)].url, "image.png", "Pai Lulo tirou 146354 milhões de bots de wpp da pobreza", "", id)
+                        }
+                    }
+                    break
 
                     case 'rankgay':
                         if (!isGroupMsg) return bot.reply(from, 'este comando só pode ser usado dentro do grupo', id)
@@ -1466,35 +1383,35 @@ module.exports = HandleMsg = async (bot, message) => {
                         await bot.reply(from, 'Olá ' +pushname+ ' aqui esta algumas informações sobre mim :\n\n' +
                              '1 - *Só posso ser adicionado em grupos pequenos e pode levar algum tempo para entrar no grupo*\n' +
                              'Pq ? Estou hospedado em um server gratuito com pouca memoria ;-;\n' +
-                             '2 - *Todos os comandos devem ser conter o prefixo ! para funcionar*\n' +
+                             '2 - *Todos os comandos devem conter o prefixo ! para funcionar*\n' +
                              '3 - *As vezes alguns comandos param de funcionar, isso é normal, o bot utiliza varias API(s) que sofrem constantes atualizações*\n' +
                              '4 - *O bot tambem para de funcionar algumas vezes, isso é culpa tanto do server quanto do wpp!*\n\n' +
-                             '*Por fim, se tiver mais alguma duvida, queira falar com o dev ( ele chama Vini, ok?) ou sugestão de comando, deixe no PV do bot :)*' ,id)
+                             '*Por fim, se tiver mais alguma duvida, e queira falar com o dev ( ele chama Vini, ok?) ou sugestão de comando, deixe no PV do bot :)*' ,id)
 
                         if (isGroupMsg) if (verifyWhiteList(author)=== true) return await bot.reply(from, 'Você está na WhiteList do bot (Tem poderes de Adm do BOT)', id)
                         else if (isGroupAdmins) return await bot.reply(from, `Você é Adm desse grupo` ,id)
                         else await bot.reply(from, `Você é um membro comum desse grupo ,logo alguns comandos do BOT não estão disponiveis para você`)
                         break
 
-                    // case 'tabela':
-                    //     if(args.length === 0) return bot.reply(from, 'Para ver a Tabela do Brasileirão digite !tabela A (para serie A) ou B (para serie B)', id)
-                    //     if (q === 'A') {
-                    //         serieA()
-                    //     }
-                    //     else if(q === 'B'){
-                    //         serieB()
-                    //     }
-                    //     break
+                    case 'tabela':
+                        if(args.length === 0) return bot.reply(from, 'Para ver a Tabela do Brasileirão digite !tabela A (para serie A) ou B (para serie B)', id)
+                        if (q === 'A') {
+                            serieA()
+                        }
+                        else if(q === 'B'){
+                            serieB()
+                        }
+                        break
 
-                    // case 'jogos':
-                    //     if(args.length === 0) return bot.reply(from, 'Para ver os jogos do Brasileirão digite !jogos A (para serie A) ou B (para serie B)', id)
-                    //     if (q === 'A') {
-                    //         jogosSerieA()
-                    //     }
-                    //     else if(q === 'B'){
-                    //         jogosSerieB()
-                    //     }
-                    //     break
+                    case 'jogos':
+                        if(args.length === 0) return bot.reply(from, 'Para ver os jogos do Brasileirão digite !jogos A (para serie A) ou B (para serie B)', id)
+                        if (q === 'A') {
+                            jogosSerieA()
+                        }
+                        else if(q === 'B'){
+                            jogosSerieB()
+                        }
+                        break
 
                     case 'blacklist':
                         if(verifyWhiteList(author)=== false) return await bot.reply(from, 'Comando somente para Adm(s) do BOT', id)
