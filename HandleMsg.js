@@ -15,7 +15,21 @@ const fetch = require('node-fetch');
 const {
     exec
 } = require('child_process')
+const { initializeApp } = require("firebase/app");
+const { getDatabase, ref, set, onValue, update, get,  push, child} = require("firebase/database");
 
+const firebaseConfig = {
+    apiKey: "AIzaSyD5yVZsmmcUyco-iJZWvfoU2RoTwWl9Uqw",
+    authDomain: "botdcc-43edd.firebaseapp.com",
+    projectId: "botdcc-43edd",
+    storageBucket: "botdcc-43edd.appspot.com",
+    messagingSenderId: "613634384890",
+    appId: "1:613634384890:web:aecbc7e4bcdc4f4edbba43",
+    measurementId: "G-XDGCH9FCB8"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
 
 const {
     menuId,
@@ -387,11 +401,86 @@ module.exports = HandleMsg = async (bot, message) => {
 
                         break
 
-                    // case 'returncode':
-                    //     const obj = fs.readFileSync ('DataPath/DCCBOT.data.json', 'utf8');
-                    //     await bot.sendText(from, JSON.stringify(obj))
-                    //     await bot.sendFile(from, 'DataPath')
-                    //     break
+                    case 'pelada':
+                        if(!q) await bot.sendText(from, 'Para Marcar ou visualizar uma pelada é preciso colocar o nome do evento !\n' + 'Digite !pelada (nome do evento) sem os ()');
+                        else {
+                            let hehex =  '\n\n*Participantes*\n\n';
+                            const dbRef = ref(getDatabase());
+                            const database = getDatabase();
+                            get(child(dbRef, 'peladas/' + q)).then((snapshot) => {
+                                const data = snapshot.val();
+                                if (!snapshot.exists()) {
+                                    set (ref (database, 'peladas/' + q), {
+                                        organizador: `${pushname}`,
+                                        nome: `${q}`,
+                                        data: 0,
+                                        participantes: [`${author.replace('@c.us', '')}`]
+                                    }).then(()=>{
+                                        bot.sendText (from, `Pelada cadastrada com sucesso !`)
+                                        bot.sendText (from, `Para adicionar uma data a pelada ${q} digite \n !pelada-data (nome do evento) (data do evento) sem os ()\n'Ex: !pelada-data gigantedacolina 24/03'`)
+                                    });
+                                } else {
+                                    for (let i = 0; i < data.participantes.length; i++) {
+                                        hehex += '╠➥'
+                                        hehex += ` @${data.participantes[i].replace(/@c.us/g, '')}\n`
+                                    }
+                                    if(data.data === 0){
+                                        bot.sendText (from, `══✪〘 PELADA ${data.nome} 〙✪══\nCriada por ${data.organizador} ${hehex}`)
+                                    }
+                                    else{
+                                        bot.sendText (from, `══✪〘 PELADA ${data.nome} 〙✪══\nCriada por ${data.organizador}\nDia ${data.data} ${hehex}`)
+                                    }
+
+                                }
+                            })
+                        }
+                        break
+
+                    case 'pelada-data':
+                        if(!q) await bot.sendText(from, 'Para adicionar uma data a pelada\n' + 'Digite !pelada-data (nome do evento) (data do evento) sem os ()\n' +
+                            'Ex: !pelada-data gigantedacolina 24/03');
+                        else {
+                            const database = getDatabase();
+                            const dbRef = ref(getDatabase());
+                            get(child(dbRef, 'peladas/' + args[0])).then((snapshot) => {
+
+                                if (!snapshot.exists()) {
+                                    bot.sendText (from, `Essa pelada ainda não foi registrada!`)
+                                } else {
+                                    update (ref (database, 'peladas/' + args[0]), {
+                                        data: args[1],
+                                    })
+                                    bot.sendText (from, `Pelada ${args[0]} será no dia ${args[1]}`)
+                                }
+                            })
+                        }
+                        break
+
+                    case 'pelada-add':
+                        if (isGroupMsg){
+                            if(!q) await bot.sendText (from, `Para adicionar participantes a pelada ${data.nome} digite \n !pelada-add (nome do evento) (marque a pessoa) sem os ()\n'Ex: !pelada-add gigantedacolina @tintim'`)
+                            else {
+                                let dataParticipantes = []
+                                const database = getDatabase();
+                                const dbRef = ref(getDatabase());
+                                get(child(dbRef, 'peladas/' + args[0])).then((snapshot) => {
+                                    const data = snapshot.val();
+                                    if (!snapshot.exists()) {
+                                        bot.sendText (from, `Essa pelada ainda não foi registrada!`)
+                                    }else {
+                                        dataParticipantes = data.participantes;
+                                        dataParticipantes.push(mentionedJidList[0])
+                                        update (ref (database, 'peladas/' + args[0]), {
+                                            participantes: dataParticipantes
+                                        })
+                                        bot.sendText (from, `${mentionedJidList.map(x => `@${x.replace('@c.us', '')}`)} foi adicionado a pelada ${data.nome}`)
+                                    }
+                                })
+                            }
+                        } else{
+                            await bot.sendText(from, 'Esse comando só pode ser executado em grupos !')
+                        }
+                        break
 
                     case 'ajuda':
                     case 'help':
