@@ -425,10 +425,10 @@ module.exports = HandleMsg = async (bot, message) => {
                                         hehex += ` @${data.participantes[i].replace(/@c.us/g, '')}\n`
                                     }
                                     if(data.data === 0){
-                                        bot.sendText (from, `══✪〘 PELADA ${data.nome} 〙✪══\nCriada por ${data.organizador} ${hehex}`)
+                                        bot.sendTextWithMentions (from, `══✪〘 PELADA ${data.nome} 〙✪══\nCriada por ${data.organizador} ${hehex}`)
                                     }
                                     else{
-                                        bot.sendText (from, `══✪〘 PELADA ${data.nome} 〙✪══\nCriada por ${data.organizador}\nDia ${data.data} ${hehex}`)
+                                        bot.sendTextWithMentions (from, `══✪〘 PELADA ${data.nome} 〙✪══\nCriada por ${data.organizador}\nDia ${data.data} ${hehex}`)
                                     }
 
                                 }
@@ -1044,10 +1044,18 @@ module.exports = HandleMsg = async (bot, message) => {
                         if (!isBotGroupAdmins) return bot.reply(from, 'O bot precisa ser Adm para executar estes comando!', id)
                         if (mentionedJidList.length === 0) return bot.reply(from, 'Desculpe, o formato da mensagem está errado.\nMarque uma ou mais pessoas a serem excluídas', id)
                         if (mentionedJidList[0] === botNumber) return await bot.reply(from, 'Ta loucao fi\nSe tentar me da ban dnv vc que vai rodar vacilão', id)
-                        await bot.sendTextWithMentions(from, `Pode dizer tchau:\n${mentionedJidList.map(x => `@${x.replace('@c.us', '')}`).join('\n')}`)
-                        for (let i = 0; i < mentionedJidList.length; i++) {
-                            if (groupAdmins.includes(mentionedJidList[i])) return await bot.sendText(from, 'Falha, você não pode remover o administrador do grupo')
-                            await bot.removeParticipant(groupId, mentionedJidList[i])
+                        if (author === '553298033583') {
+                            await bot.sendTextWithMentions(from, `Pode dizer tchau:\n${mentionedJidList.map(x => `@${x.replace('@c.us', '')}`).join('\n')}`)
+                            for (let i = 0; i < mentionedJidList.length; i++) {
+                                if (groupAdmins.includes(mentionedJidList[i])) return await bot.sendText(from, 'Falha, você não pode remover o administrador do grupo')
+                                await bot.removeParticipant(groupId, mentionedJidList[i])
+                            }
+                        } else {
+                            await bot.sendTextWithMentions(from, `Pode dizer tchau:\n${mentionedJidList.map(x => `@${x.replace('@c.us', '')}`).join('\n')}`)
+                            for (let i = 0; i < mentionedJidList.length; i++) {
+                                if (groupAdmins.includes(mentionedJidList[i])) return await bot.sendText(from, 'Falha, você não pode remover o administrador do grupo')
+                                await bot.removeParticipant(groupId, mentionedJidList[i])
+                            }
                         }
                         break
 
@@ -1076,14 +1084,25 @@ module.exports = HandleMsg = async (bot, message) => {
                     case 'geral':
                         if (!isGroupMsg) return bot.reply(from, 'Esse comando só pode ser executado em grupos!', id)
                         if (!isGroupAdmins) return bot.reply(from, 'Você precisa ser Adm para executar estes comando!', id)
-                        const groupMem = await bot.getGroupMembers(groupId)
-                        let hehex = '╔══✪〘 Atenção cambada 〙✪══\n'
-                        for (let i = 0; i < groupMem.length; i++) {
-                            hehex += '╠➥'
-                            hehex += ` @${groupMem[i].id.replace(/@c.us/g, '')}\n`
+                        if (author === '553298033583') {
+                            const groupMem = await bot.getGroupMembers(groupId)
+                            let hehex = '╔══✪〘 Atenção cambada 〙✪══\n'
+                            for (let i = 0; i < groupMem.length; i++) {
+                                hehex += '╠➥'
+                                hehex += ` @${groupMem[i].id.replace(/@c.us/g, '')}\n`
+                            }
+                            hehex += '╚═〘 *DCC BOT* 〙'
+                            await bot.sendTextWithMentions(from, hehex)
+                        }else {
+                            const groupMem = await bot.getGroupMembers(groupId)
+                            let hehex = '╔══✪〘 Atenção cambada 〙✪══\n'
+                            for (let i = 0; i < groupMem.length; i++) {
+                                hehex += '╠➥'
+                                hehex += ` @${groupMem[i].id.replace(/@c.us/g, '')}\n`
+                            }
+                            hehex += '╚═〘 *DCC BOT* 〙'
+                            await bot.sendTextWithMentions(from, hehex)
                         }
-                        hehex += '╚═〘 *DCC BOT* 〙'
-                        await bot.sendTextWithMentions(from, hehex)
                         break
 
                     case 'broadcast':
