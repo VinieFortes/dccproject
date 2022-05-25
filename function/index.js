@@ -38,9 +38,6 @@ const processTime = (timestamp, now) => {
  */
 const options = (start) => {
     const options = {
-        sessionData: ev.on('sessionData.**', async (sessionData, sessionId) =>{
-            console.log("Aaaaaaaaaaaaaaaaaaaaaaaaaaaa", sessionId, sessionData)
-        }),
         sessionId: 'DCCBOT',
         sessionDataPath: 'DataPath',
         headless: true,
