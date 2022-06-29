@@ -40,7 +40,7 @@ const options = (start) => {
     const options = {
         sessionId: 'DCCBOT',
         sessionDataPath: 'DataPath',
-        headless: true,
+        headless: false,
         qrTimeout: 0,
         authTimeout: 0,
         blockCrashLogs: true,

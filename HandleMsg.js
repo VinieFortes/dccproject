@@ -136,13 +136,13 @@ module.exports = HandleMsg = async (bot, message) => {
         const errorurl2 = 'https://steamuserimages-a.akamaihd.net/ugc/954087817129084207/5B7E46EE484181A676C02DFCAD48ECB1C74BC423/?imw=512&&ima=fit&impolicy=Letterbox&imcolor=%23000000&letterbox=false'
         const isImage = type === 'image'
         const reason = q ? q : 'Nothing.'
-        const isQuotedImage = quotedMsg && quotedMsg.type === 'image'
-        const isQuotedVideo = quotedMsg && quotedMsg.type === 'video'
-        const isQuotedFile = quotedMsg && quotedMsg.type === 'file'
-        const isQuotedAudio = quotedMsg && quotedMsg.type === 'audio'
-        const isQuotedPpt = quotedMsg && quotedMsg.type === 'ppt'
-        const isQuotedGif = quotedMsg && quotedMsg.type === 'gif'
-        const isQuotedSticker = quotedMsg && quotedMsg.type === 'sticker'
+            const isQuotedImage = quotedMsg && quotedMsg.type === 'image'
+            const isQuotedVideo = quotedMsg && quotedMsg.type === 'video'
+            const isQuotedFile = quotedMsg && quotedMsg.type === 'file'
+            const isQuotedAudio = quotedMsg && quotedMsg.type === 'audio'
+            const isQuotedPpt = quotedMsg && quotedMsg.type === 'ppt'
+            const isQuotedGif = quotedMsg && quotedMsg.type === 'gif'
+            const isQuotedSticker = quotedMsg && quotedMsg.type === 'sticker'
 
 
         // [IDENTIFY]

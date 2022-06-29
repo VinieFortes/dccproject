@@ -1,3 +1,6 @@
-2022/06/18-13:58:27.099 5b98 Reusing MANIFEST /mnt/HD_Linux/WebstormProjects/dccProject/DataPath/_IGNORE_DCCBOT/Default/Local Storage/leveldb/MANIFEST-000001
-2022/06/18-13:58:27.101 5b98 Recovering log #3
-2022/06/18-13:58:27.102 5b98 Reusing old log /mnt/HD_Linux/WebstormProjects/dccProject/DataPath/_IGNORE_DCCBOT/Default/Local Storage/leveldb/000003.log 
+2022/06/28-22:06:27.365 2a71 Reusing MANIFEST /mnt/HD_Linux/WebstormProjects/dccProject/DataPath/_IGNORE_DCCBOT/Default/Local Storage/leveldb/MANIFEST-000001
+2022/06/28-22:06:27.367 2a71 Recovering log #3
+2022/06/28-22:06:27.368 2a71 Reusing old log /mnt/HD_Linux/WebstormProjects/dccProject/DataPath/_IGNORE_DCCBOT/Default/Local Storage/leveldb/000003.log 
+2022/06/28-22:07:28.198 2a6f Level-0 table #5: started
+2022/06/28-22:07:28.338 2a6f Level-0 table #5: 14813 bytes OK
+2022/06/28-22:07:28.489 2a6f Delete type=0 #3
