@@ -1,3 +1,2 @@
-2022/06/28-22:05:45.339 29d3 Reusing MANIFEST /mnt/HD_Linux/WebstormProjects/dccProject/DataPath/_IGNORE_DCCBOT/Default/Service Worker/Database/MANIFEST-000001
-2022/06/28-22:05:45.340 29d3 Recovering log #3
-2022/06/28-22:05:45.341 29d3 Reusing old log /mnt/HD_Linux/WebstormProjects/dccProject/DataPath/_IGNORE_DCCBOT/Default/Service Worker/Database/000003.log 
+2022/07/26-10:45:33.962 c0f7 Creating DB /mnt/HD_Linux/WebstormProjects/dccProject/DataPath/_IGNORE_DCCBOT/Default/Service Worker/Database since it was missing.
+2022/07/26-10:45:34.677 c0f7 Reusing MANIFEST /mnt/HD_Linux/WebstormProjects/dccProject/DataPath/_IGNORE_DCCBOT/Default/Service Worker/Database/MANIFEST-000001

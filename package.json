@@ -18,7 +18,7 @@
    "dependencies": {
       "@mapbox/node-pre-gyp": "1.0.9",
       "@octokit/core": "3.6.0",
-      "@open-wa/wa-automate": "4.42.2",
+      "@open-wa/wa-automate": "4.42.8",
       "app-root-path": "3.0.0",
       "axios": "0.26.1",
       "bent": "7.3.12",
